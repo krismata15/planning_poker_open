@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "607539426394",
+    "project_id": "planning-poker-open",
+    "storage_bucket": "planning-poker-open.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607539426394:android:ef6cc8764bfb272804d463",
+        "android_client_info": {
+          "package_name": "com.planningpokeropen.kdata.planning_poker_open"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607539426394-ihfg3kt55hn30cfjck1oa3jvopvfpvhq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF8s5K5qwel70ewEkEtaCN3sHXdx5r-Hs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "607539426394-ihfg3kt55hn30cfjck1oa3jvopvfpvhq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
