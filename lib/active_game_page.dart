@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ActiveGamePage extends StatelessWidget {
-  const ActiveGamePage({Key? key}) : super(key: key);
+  const ActiveGamePage({Key? key, this.gameId}) : super(key: key);
+
+  final String? gameId;
 
   @override
   Widget build(BuildContext context) {

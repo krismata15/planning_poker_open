@@ -3,9 +3,11 @@ part of 'create_game_bloc.dart';
 @immutable
 abstract class CreateGameEvent {}
 
-class CreateGame extends CreateGameEvent {
-  CreateGame({this.gameName, this.votingSystemId});
+class GetInitialDataForCreatingGame extends CreateGameEvent {}
 
-  final String? gameName;
-  final String? votingSystemId;
+class CreateGame extends CreateGameEvent {
+  CreateGame({required this.deckId, required this.gameName});
+
+  final String gameName;
+  final String deckId;
 }
