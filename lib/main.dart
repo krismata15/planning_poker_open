@@ -4,7 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:planning_poker_open/active_game_page.dart';
+import 'package:planning_poker_open/active_game/active_game_page.dart';
+import 'package:planning_poker_open/app_bloc_observer.dart';
 import 'package:planning_poker_open/create_game/presentation/create_new_game_page.dart';
 import 'package:planning_poker_open/firebase_options.dart';
 import 'package:planning_poker_open/firebase_populate_script.dart';
@@ -18,6 +19,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  Bloc.observer = AppBlocObserver();
 
   await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
@@ -83,8 +86,10 @@ final GoRouter _router = GoRouter(
         print(state.toString());
         print(RoutesNames.home);
         final bool guardedPath = guardedPaths.contains(state.fullPath);
+        print('Guarded path $guardedPath');
         if (FirebaseAuth.instance.currentUser == null && guardedPath) {
-          return '${RoutesPaths.login}?guarded-route=${state.fullPath}';
+          print('rute guarded ${state.location}');
+          return '${RoutesPaths.login}?guarded-route=${state.location}';
         }
       },
       routes: [

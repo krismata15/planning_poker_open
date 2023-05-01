@@ -10,6 +10,11 @@ abstract class BasicStyles {
     fontWeight: FontWeight.w800,
   );
 
+  static const TextStyle titleStyle = TextStyle(
+    fontWeight: FontWeight.w800,
+    fontSize: 20,
+  );
+
   static const TextStyle simpleTitleStyle = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w500,

@@ -5,6 +5,12 @@ class DeckEntity extends Equatable {
   const DeckEntity(
       {required this.id, required this.name, required this.options});
 
+  factory DeckEntity.fromJson(Map<String, dynamic> json) => DeckEntity(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        options: (json['options'] as List).map((e) => e as String).toList(),
+      );
+
   factory DeckEntity.fromModel(DeckModel model) => DeckEntity(
         id: model.id!,
         name: model.name!,

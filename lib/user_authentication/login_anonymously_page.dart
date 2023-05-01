@@ -51,10 +51,7 @@ class _LoginAnonymouslyPageState extends State<LoginAnonymouslyPage> {
             children: [
               const Text(
                 'Choose your display name',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
-                ),
+                style: BasicStyles.titleStyle,
               ),
               const SizedBox(
                 height: BasicStyles.standardSeparationVertical * 2.5,

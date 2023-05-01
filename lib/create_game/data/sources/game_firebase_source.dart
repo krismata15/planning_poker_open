@@ -34,7 +34,9 @@ class GameFirebaseSource {
         'name': deck.data()!.name,
         'options': deck.data()!.options,
       },
-      'selections': []
+      'selections': [],
+      'active_players': 1,
+      'createdAt': FieldValue.serverTimestamp(),
     };
 
     final DocumentReference<Map<String, dynamic>> result = await db

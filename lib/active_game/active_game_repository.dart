@@ -1,0 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:planning_poker_open/active_game/game_data_source.dart';
+
+class ActiveGameRepository {
+  final GameDataSource _gameDataSource = GameDataSource();
+
+  Future<Stream<DocumentSnapshot<Map<String, dynamic>>>> getActiveGame(
+      String gameId) async {
+    return _gameDataSource.getActiveGame(gameId);
+  }
+
+  Future<void> selectOption(String gameId, String option) async {
+    await _gameDataSource.selectOption(gameId, option);
+  }
+}
