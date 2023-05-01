@@ -163,13 +163,19 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                                         }
                                       : null,
                               child: isLoading
-                                  ? CircularProgressIndicator()
-                                  : Text('Create game'),
+                                  ? const CircularProgressIndicator()
+                                  : const Text('Create game'),
                             )
                           ],
                         ),
                       ),
                     ],
+                  );
+                }
+
+                if (state is CreateGameSuccess) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
                 }
 
