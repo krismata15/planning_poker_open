@@ -22,46 +22,47 @@ class ActiveGamePage extends StatelessWidget {
             horizontal: BasicStyles.horizontalPadding,
             vertical: BasicStyles.verticalPadding,
           ),
-          child: BlocListener<ActiveGameBloc, ActiveGameState>(
-            listener: (context, state) {
-              print('Listening states $state');
-            },
-            child: BlocBuilder<ActiveGameBloc, ActiveGameState>(
-              builder: (context, state) {
-                if (state is ActiveGameUpdated) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            state.gameName,
-                            style: BasicStyles.barTitleStyle,
-                          ),
-                          Text(
-                            state.activeUser.name,
-                            style: BasicStyles.titleStyle,
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: Board(
-                          players: state.players,
-                          selections: state.playerCardSelections,
-                        ),
-                      ),
-                      UserHandCards(
-                        cardOptions: state.cards.options,
-                        selection: state.selection,
-                      ),
-                    ],
-                  );
-                }
+          child: BlocBuilder<ActiveGameBloc, ActiveGameState>(
+            builder: (context, state) {
+              if (state is ActiveGameGettingInitialData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-                return const Text('Error');
-              },
-            ),
+              if (state is ActiveGameUpdated) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          state.gameName,
+                          style: BasicStyles.barTitleStyle,
+                        ),
+                        Text(
+                          state.activeUser.name,
+                          style: BasicStyles.titleStyle,
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Board(
+                        players: state.players,
+                        selections: state.playerCardSelections,
+                      ),
+                    ),
+                    UserHandCards(
+                      cardOptions: state.cards.options,
+                      selection: state.selection,
+                    ),
+                  ],
+                );
+              }
+
+              return const Text('Error');
+            },
           ),
         ),
       ),

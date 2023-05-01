@@ -16,6 +16,7 @@ class ActiveGameBloc extends Bloc<ActiveGameEvent, ActiveGameState> {
     on<ActiveGameSelectOption>(_selectOptionCard);
     on<ActiveGameGetInitialData>(
         (ActiveGameGetInitialData event, Emitter<ActiveGameState> emit) async {
+      emit(ActiveGameGettingInitialData());
       final User? user = FirebaseAuth.instance.currentUser;
       //http://localhost:63744/#/active-game/o532uOJ7DiYHudvjl8Eh
       print('eNTRANDO AQUI EVENTO');

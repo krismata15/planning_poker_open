@@ -1,11 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planning_poker_open/active_game/active_game_page.dart';
-import 'package:planning_poker_open/app_bloc_observer.dart';
 import 'package:planning_poker_open/create_game/presentation/create_new_game_page.dart';
 import 'package:planning_poker_open/firebase_options.dart';
 import 'package:planning_poker_open/firebase_populate_script.dart';
@@ -20,19 +20,19 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  Bloc.observer = AppBlocObserver();
+  //Bloc.observer = AppBlocObserver();
 
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  //await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  //FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
   await FirebasePopulateScript.populate();
 
-  /*FlutterError.onError = (errorDetails) {
+  FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
-  };*/
+  };
   runApp(const MyApp());
 }
 
