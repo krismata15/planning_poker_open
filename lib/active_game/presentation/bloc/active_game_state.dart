@@ -29,12 +29,12 @@ class ActiveGameUpdated extends ActiveGameState {
     this.gameResult,
   });
 
-  final List<PlayerCardSelection> playerCardSelections;
+  final List<PlayerCardSelectionModel> playerCardSelections;
   final String gameName;
   final DeckEntity cards;
   final List<UserPlayerEntity> players;
   final UserPlayerEntity activeUser;
-  final PlayerCardSelection? selection;
+  final PlayerCardSelectionModel? selection;
   final GameStatus gameStatus;
   final GameResult? gameResult;
 }

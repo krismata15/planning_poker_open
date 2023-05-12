@@ -2,11 +2,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:planning_poker_open/basic_separation_bloc.dart';
 import 'package:planning_poker_open/create_game/domain/entities/deck_entity.dart';
 import 'package:planning_poker_open/create_game/presentation/bloc/create_game_bloc.dart';
-import 'package:planning_poker_open/routes_names.dart';
-import 'package:planning_poker_open/styles/basic_styles.dart';
+import 'package:planning_poker_open/shared/presentation/widgets/basic_separation_bloc.dart';
+import 'package:planning_poker_open/shared/styles/basic_styles.dart';
+import 'package:planning_poker_open/shared/utils/routes_names.dart';
 
 class CreateNewGamePage extends StatefulWidget {
   const CreateNewGamePage({super.key});

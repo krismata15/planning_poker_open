@@ -5,12 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:planning_poker_open/active_game/active_game_page.dart';
+import 'package:planning_poker_open/active_game/presentation/active_game_page.dart';
 import 'package:planning_poker_open/create_game/presentation/create_new_game_page.dart';
 import 'package:planning_poker_open/firebase_options.dart';
-import 'package:planning_poker_open/firebase_populate_script.dart';
 import 'package:planning_poker_open/home.dart';
-import 'package:planning_poker_open/routes_names.dart';
+import 'package:planning_poker_open/shared/utils/firebase_populate_script.dart';
+import 'package:planning_poker_open/shared/utils/routes_names.dart';
 import 'package:planning_poker_open/user_authentication/bloc/authentication_bloc.dart';
 import 'package:planning_poker_open/user_authentication/login_anonymously_page.dart';
 

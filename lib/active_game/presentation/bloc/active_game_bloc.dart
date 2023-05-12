@@ -3,11 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:planning_poker_open/active_game/active_game_repository.dart';
-import 'package:planning_poker_open/active_game/game_model.dart';
-import 'package:planning_poker_open/active_game/game_results_model.dart';
-import 'package:planning_poker_open/active_game/player_card_selection.dart';
-import 'package:planning_poker_open/active_game/user_player_entity.dart';
+import 'package:planning_poker_open/active_game/data/models/game_model.dart';
+import 'package:planning_poker_open/active_game/data/models/game_results_model.dart';
+import 'package:planning_poker_open/active_game/data/models/player_card_selection.dart';
+import 'package:planning_poker_open/active_game/domain/entities/user_player_entity.dart';
+import 'package:planning_poker_open/active_game/domain/repository/active_game_repository.dart';
 import 'package:planning_poker_open/create_game/domain/entities/deck_entity.dart';
 
 part 'active_game_event.dart';
@@ -37,10 +37,10 @@ class ActiveGameBloc extends Bloc<ActiveGameEvent, ActiveGameState> {
             );
           }
 
-          final List<PlayerCardSelection> selections =
+          final List<PlayerCardSelectionModel> selections =
               ((data.data()?['selections'] as List?) ?? [])
-                  .map<PlayerCardSelection>(
-                    (selection) => PlayerCardSelection.fromJson(selection),
+                  .map<PlayerCardSelectionModel>(
+                    (selection) => PlayerCardSelectionModel.fromJson(selection),
                   )
                   .toList();
           final DeckEntity deckEntity = DeckEntity.fromJson(
@@ -56,7 +56,8 @@ class ActiveGameBloc extends Bloc<ActiveGameEvent, ActiveGameState> {
 
           final UserPlayerEntity activeUser =
               players.firstWhere((element) => element.id == user!.uid);
-          final PlayerCardSelection? selection = selections.firstWhereOrNull(
+          final PlayerCardSelectionModel? selection =
+              selections.firstWhereOrNull(
             (element) => element.playerId == activeUser.id,
           );
 

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:planning_poker_open/active_game/game_model.dart';
-import 'package:planning_poker_open/active_game/player_card_selection.dart';
+import 'package:planning_poker_open/active_game/data/models/game_model.dart';
+import 'package:planning_poker_open/active_game/data/models/player_card_selection.dart';
 
 class HistoricGameResult {
   HistoricGameResult({
@@ -34,7 +34,7 @@ class SelectionsResultData extends Equatable {
   });
 
   factory SelectionsResultData.fromPlayerSelections(
-    List<PlayerCardSelection> playerCardSelections,
+    List<PlayerCardSelectionModel> playerCardSelections,
     String selection,
   ) {
     final count = playerCardSelections

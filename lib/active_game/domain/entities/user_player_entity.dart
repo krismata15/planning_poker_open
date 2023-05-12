@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:planning_poker_open/active_game/player_card_selection.dart';
+import 'package:planning_poker_open/active_game/data/models/player_card_selection.dart';
 
 class UserPlayerEntity {
   UserPlayerEntity({
@@ -19,7 +19,7 @@ class UserPlayerEntity {
   final String name;
   final int position;
 
-  String? userSelection(List<PlayerCardSelection> selections) {
+  String? userSelection(List<PlayerCardSelectionModel> selections) {
     return selections
         .firstWhereOrNull((element) => element.playerId == id)
         ?.selection;

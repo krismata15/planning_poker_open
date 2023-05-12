@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:planning_poker_open/active_game/game_model.dart';
+import 'package:planning_poker_open/active_game/data/models/game_model.dart';
 import 'package:planning_poker_open/create_game/data/models/deck_model.dart';
-import 'package:planning_poker_open/firebase_collection_names.dart';
+import 'package:planning_poker_open/shared/utils/firebase_collection_names.dart';
 
 class GameFirebaseSource {
   final FirebaseFirestore db = FirebaseFirestore.instance;

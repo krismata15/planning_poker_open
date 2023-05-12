@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-class PlayerCardSelection extends Equatable {
-  const PlayerCardSelection({
+class PlayerCardSelectionModel extends Equatable {
+  const PlayerCardSelectionModel({
     required this.playerId,
     required this.selection,
   });
 
-  factory PlayerCardSelection.fromJson(Map<String, dynamic> json) =>
-      PlayerCardSelection(
+  factory PlayerCardSelectionModel.fromJson(Map<String, dynamic> json) =>
+      PlayerCardSelectionModel(
         playerId: json['player_id'] as String,
         selection: json['selection'] as String,
       );

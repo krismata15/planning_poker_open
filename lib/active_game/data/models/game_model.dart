@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:planning_poker_open/active_game/game_results_model.dart';
-import 'package:planning_poker_open/active_game/player_card_selection.dart';
-import 'package:planning_poker_open/active_game/user_player_entity.dart';
+import 'package:planning_poker_open/active_game/data/models/game_results_model.dart';
+import 'package:planning_poker_open/active_game/data/models/player_card_selection.dart';
+import 'package:planning_poker_open/active_game/domain/entities/user_player_entity.dart';
 import 'package:planning_poker_open/create_game/domain/entities/deck_entity.dart';
 
 class GameModel extends Equatable {
@@ -28,7 +28,8 @@ class GameModel extends Equatable {
             .map((e) => UserPlayerEntity.fromJson(e as Map<String, dynamic>))
             .toList(),
         playerCardSelections: (json['selections'] as List)
-            .map((e) => PlayerCardSelection.fromJson(e as Map<String, dynamic>))
+            .map((e) =>
+                PlayerCardSelectionModel.fromJson(e as Map<String, dynamic>))
             .toList(),
         status: GameStatus.values
                 .firstWhereOrNull((element) => element == json['status']) ??
@@ -45,7 +46,7 @@ class GameModel extends Equatable {
     String? createdAt,
     DeckEntity? deck,
     List<UserPlayerEntity>? players,
-    List<PlayerCardSelection>? playerCardSelections,
+    List<PlayerCardSelectionModel>? playerCardSelections,
     GameStatus? status,
   }) {
     return GameModel(
@@ -80,7 +81,7 @@ class GameModel extends Equatable {
   final String createdAt;
   final DeckEntity deck;
   final List<UserPlayerEntity> players;
-  final List<PlayerCardSelection> playerCardSelections;
+  final List<PlayerCardSelectionModel> playerCardSelections;
   final GameStatus status;
   final GameResult? gameResult;
 

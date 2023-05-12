@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:planning_poker_open/firebase_collection_names.dart';
+import 'package:planning_poker_open/shared/utils/firebase_collection_names.dart';
 
 class FirebaseAuthenticationService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;

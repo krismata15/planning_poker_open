@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:planning_poker_open/active_game/bloc/active_game_bloc.dart';
-import 'package:planning_poker_open/active_game/game_model.dart';
-import 'package:planning_poker_open/active_game/game_results_model.dart';
-import 'package:planning_poker_open/active_game/player_card_selection.dart';
-import 'package:planning_poker_open/active_game/user_player_entity.dart';
-import 'package:planning_poker_open/basic_separation_bloc.dart';
-import 'package:planning_poker_open/styles/basic_styles.dart';
+import 'package:planning_poker_open/active_game/data/models/game_model.dart';
+import 'package:planning_poker_open/active_game/data/models/game_results_model.dart';
+import 'package:planning_poker_open/active_game/data/models/player_card_selection.dart';
+import 'package:planning_poker_open/active_game/domain/entities/user_player_entity.dart';
+import 'package:planning_poker_open/active_game/presentation/bloc/active_game_bloc.dart';
+import 'package:planning_poker_open/shared/presentation/widgets/basic_separation_bloc.dart';
+import 'package:planning_poker_open/shared/styles/basic_styles.dart';
 
 class ActiveGamePage extends StatelessWidget {
   const ActiveGamePage({super.key, this.gameId});
@@ -154,7 +154,7 @@ class UserHandCards extends StatelessWidget {
   });
 
   final List<String> cardOptions;
-  final PlayerCardSelection? selection;
+  final PlayerCardSelectionModel? selection;
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +247,7 @@ class Board extends StatelessWidget {
     required this.gameStatus,
   });
 
-  final List<PlayerCardSelection> selections;
+  final List<PlayerCardSelectionModel> selections;
   final List<UserPlayerEntity> players;
 
   final GameStatus gameStatus;

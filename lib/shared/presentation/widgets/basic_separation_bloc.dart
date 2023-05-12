@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planning_poker_open/styles/basic_styles.dart';
+import 'package:planning_poker_open/shared/styles/basic_styles.dart';
 
 class BasicSeparationSpace extends StatelessWidget {
   const BasicSeparationSpace.vertical({

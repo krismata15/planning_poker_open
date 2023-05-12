@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:planning_poker_open/styles/basic_styles.dart';
+import 'package:planning_poker_open/shared/styles/basic_styles.dart';
 import 'package:planning_poker_open/user_authentication/bloc/authentication_bloc.dart';
 
 class LoginAnonymouslyPage extends StatefulWidget {

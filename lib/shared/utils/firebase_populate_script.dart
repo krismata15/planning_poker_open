@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:planning_poker_open/firebase_collection_names.dart';
+import 'package:planning_poker_open/shared/utils/firebase_collection_names.dart';
 
 abstract class FirebasePopulateScript {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
