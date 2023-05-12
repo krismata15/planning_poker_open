@@ -1,4 +1,3 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -33,7 +32,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
           if (state is CreateGameGotInitialData) {
             setState(() {
               decks = state.decks;
-              selectedDeckId ??= decks!.first.id;
+              selectedDeckId ??= decks!.last.id;
             });
           }
 
@@ -67,7 +66,6 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                 return current is! CreateGameInProgress;
               },
               builder: (context, state) {
-                print('State de create game: $state');
                 if (state is CreateGameGettingInitialData) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -88,6 +86,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const SelectableText(
                               'Choose a name and a voting system for your game.',
@@ -110,39 +109,28 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                             const BasicSeparationSpace.vertical(
                               multiplier: 1.5,
                             ),
-                            DropdownButtonHideUnderline(
-                              child: DropdownButtonFormField2<String>(
-                                decoration: InputDecoration(
-                                  isDense: true,
+                            LayoutBuilder(
+                              builder: (BuildContext context, constraints) {
+                                return DropdownMenu(
+                                  width: constraints.maxWidth,
+                                  onSelected: (String? value) {
+                                    setState(() {
+                                      selectedDeckId = value;
+                                    });
+                                  },
+                                  initialSelection: selectedDeckId,
                                   label: const Text('Voting system'),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  contentPadding: Theme.of(context)
-                                      .inputDecorationTheme
-                                      .contentPadding,
-                                ),
-                                dropdownStyleData: const DropdownStyleData(
-                                  offset: Offset(0, -10),
-                                  padding: EdgeInsets.zero,
-                                ),
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    selectedDeckId = value;
-                                  });
-                                },
-                                value: selectedDeckId,
-                                items: decks!
-                                    .map(
-                                      (deck) => DropdownMenuItem(
-                                        value: deck.id,
-                                        child: Text(
-                                          '${deck.name} ( ${deck.options.join(', ')} )',
+                                  dropdownMenuEntries: decks!
+                                      .map(
+                                        (deck) => DropdownMenuEntry(
+                                          value: deck.id,
+                                          label:
+                                              '${deck.name} ( ${deck.options.join(', ')} )',
                                         ),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
+                                      )
+                                      .toList(),
+                                );
+                              },
                             ),
                             const BasicSeparationSpace.vertical(
                               multiplier: 2,

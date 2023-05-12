@@ -53,17 +53,26 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
-                    minimumSize: Size(180, 50),
-                    textStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    )),
+                  minimumSize: const Size(180, 50),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
               inputDecorationTheme: InputDecorationTheme(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 isDense: true,
+              ),
+              dropdownMenuTheme: DropdownMenuThemeData(
+                inputDecorationTheme: InputDecorationTheme(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  isDense: true,
+                ),
               ),
             ),
           );
