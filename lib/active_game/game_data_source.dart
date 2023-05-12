@@ -101,14 +101,10 @@ class GameDataSource {
     final GameModel gameModel =
         GameModel.fromJson(gameDataRaw, gameReference.id);
 
-    print(gameModel.toString());
-
     final List<PlayerCardSelection> playerCardSelections =
         gameModel.playerCardSelections;
 
     final gameResultsDocumentReference = _db.collection('games_results').doc();
-
-    print('LLegando aqui');
 
     final HistoricGameResult gameResults = HistoricGameResult(
       id: gameResultsDocumentReference.id,
@@ -121,14 +117,12 @@ class GameDataSource {
               playerSelection.selection,
             ),
           )
+          .toSet()
           .toList(),
     );
-    print('LLegando aqui 111 ${gameResults.toJson()}');
     await gameResultsDocumentReference.set(
       gameResults.toJson(),
     );
-
-    print('LLegando aqui 222');
 
     await gameReference.reference.update({
       'status': GameStatus.revealed.name,

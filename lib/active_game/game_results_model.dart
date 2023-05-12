@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:planning_poker_open/active_game/game_model.dart';
 import 'package:planning_poker_open/active_game/player_card_selection.dart';
 
@@ -24,7 +25,7 @@ class HistoricGameResult {
   final List<SelectionsResultData> selectionsResultData;
 }
 
-class SelectionsResultData {
+class SelectionsResultData extends Equatable {
   SelectionsResultData({
     required this.selection,
     required this.count,
@@ -59,6 +60,9 @@ class SelectionsResultData {
   final String selection;
   final int count;
   final double totalPercentage;
+
+  @override
+  List<Object?> get props => [selection, count, totalPercentage];
 }
 
 class GameResult {
