@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class PlayerCardSelection extends Equatable {
-  PlayerCardSelection({
+  const PlayerCardSelection({
     required this.playerId,
     required this.selection,
   });

@@ -17,6 +17,14 @@ class DeckEntity extends Equatable {
         options: model.options!,
       );
 
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['name'] = name;
+    map['options'] = options;
+    return map;
+  }
+
   final String id;
   final String name;
   final List<String> options;

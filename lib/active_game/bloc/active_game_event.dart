@@ -14,3 +14,7 @@ class ActiveGameSelectOption extends ActiveGameEvent {
 
   final String option;
 }
+
+class ActiveGameRevealCards extends ActiveGameEvent {}
+
+class ActiveGameReset extends ActiveGameEvent {}

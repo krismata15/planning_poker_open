@@ -25,6 +25,8 @@ class ActiveGameUpdated extends ActiveGameState {
     required this.playerCardSelections,
     required this.activeUser,
     required this.selection,
+    required this.gameStatus,
+    this.gameResult,
   });
 
   final List<PlayerCardSelection> playerCardSelections;
@@ -33,6 +35,8 @@ class ActiveGameUpdated extends ActiveGameState {
   final List<UserPlayerEntity> players;
   final UserPlayerEntity activeUser;
   final PlayerCardSelection? selection;
+  final GameStatus gameStatus;
+  final GameResult? gameResult;
 }
 
 class ActiveGameError extends ActiveGameState {

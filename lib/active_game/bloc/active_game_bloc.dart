@@ -4,6 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:planning_poker_open/active_game/active_game_repository.dart';
+import 'package:planning_poker_open/active_game/game_model.dart';
+import 'package:planning_poker_open/active_game/game_results_model.dart';
 import 'package:planning_poker_open/active_game/player_card_selection.dart';
 import 'package:planning_poker_open/active_game/user_player_entity.dart';
 import 'package:planning_poker_open/create_game/domain/entities/deck_entity.dart';
@@ -14,12 +16,13 @@ part 'active_game_state.dart';
 class ActiveGameBloc extends Bloc<ActiveGameEvent, ActiveGameState> {
   ActiveGameBloc({required this.gameId}) : super(ActiveGameInitial()) {
     on<ActiveGameSelectOption>(_selectOptionCard);
+    on<ActiveGameRevealCards>(_revealCards);
+    on<ActiveGameReset>(_resetGameSelections);
     on<ActiveGameGetInitialData>(
         (ActiveGameGetInitialData event, Emitter<ActiveGameState> emit) async {
       emit(ActiveGameGettingInitialData());
       final User? user = FirebaseAuth.instance.currentUser;
-      //http://localhost:63744/#/active-game/o532uOJ7DiYHudvjl8Eh
-      print('eNTRANDO AQUI EVENTO');
+
       final listenable = await activeGameRepository.getActiveGame(event.gameId);
       await emit.forEach(listenable,
           onData: (DocumentSnapshot<Map<String, dynamic>> data) {
@@ -28,6 +31,15 @@ class ActiveGameBloc extends Bloc<ActiveGameEvent, ActiveGameState> {
         print('data ${data.data()}');
         print(
             'data ${(data.data()!['selections'] as List).map((e) => e).toList()}');
+        final GameStatus gameStatus = gameStatusFromString(
+          data.data()!['status'],
+        );
+        GameResult? gameResult;
+        if (gameStatus == GameStatus.revealed) {
+          gameResult = GameResult.fromJson(
+            data.data()!['game_results'],
+          );
+        }
 
         final List<PlayerCardSelection> selections =
             ((data.data()?['selections'] as List?) ?? [])
@@ -50,6 +62,8 @@ class ActiveGameBloc extends Bloc<ActiveGameEvent, ActiveGameState> {
         final PlayerCardSelection? selection = selections.firstWhereOrNull(
           (element) => element.playerId == activeUser.id,
         );
+
+        print('Game results ${gameResult?.toJson()}');
         return ActiveGameUpdated(
           gameName: data.data()!['name'],
           playerCardSelections: selections,
@@ -57,6 +71,8 @@ class ActiveGameBloc extends Bloc<ActiveGameEvent, ActiveGameState> {
           players: players,
           activeUser: activeUser,
           selection: selection,
+          gameStatus: gameStatus,
+          gameResult: gameResult,
         );
       }, onError: (e, s) {
         print('error $e $s');
@@ -74,6 +90,25 @@ class ActiveGameBloc extends Bloc<ActiveGameEvent, ActiveGameState> {
       await activeGameRepository.selectOption(gameId, event.option);
     } catch (e) {
       emit(ActiveGameError(message: 'Error selecting card'));
+    }
+  }
+
+  Future<void> _revealCards(
+      ActiveGameRevealCards event, Emitter<ActiveGameState> emit) async {
+    try {
+      await activeGameRepository.revealCards(gameId);
+    } catch (e, s) {
+      print('error $e, $s');
+      emit(ActiveGameError(message: 'Error revealing cards'));
+    }
+  }
+
+  Future<void> _resetGameSelections(
+      ActiveGameReset event, Emitter<ActiveGameState> emit) async {
+    try {
+      await activeGameRepository.resetGameSelections(gameId);
+    } catch (e) {
+      emit(ActiveGameError(message: 'Error resetting game'));
     }
   }
 }

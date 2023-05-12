@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planning_poker_open/active_game/bloc/active_game_bloc.dart';
+import 'package:planning_poker_open/active_game/game_model.dart';
+import 'package:planning_poker_open/active_game/game_results_model.dart';
 import 'package:planning_poker_open/active_game/player_card_selection.dart';
 import 'package:planning_poker_open/active_game/user_player_entity.dart';
+import 'package:planning_poker_open/basic_separation_bloc.dart';
 import 'package:planning_poker_open/styles/basic_styles.dart';
 
 class ActiveGamePage extends StatelessWidget {
@@ -32,7 +35,6 @@ class ActiveGamePage extends StatelessWidget {
 
               if (state is ActiveGameUpdated) {
                 return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,12 +53,19 @@ class ActiveGamePage extends StatelessWidget {
                       child: Board(
                         players: state.players,
                         selections: state.playerCardSelections,
+                        gameStatus: state.gameStatus,
                       ),
                     ),
-                    UserHandCards(
-                      cardOptions: state.cards.options,
-                      selection: state.selection,
-                    ),
+                    if (state.gameStatus != GameStatus.revealed)
+                      UserHandCards(
+                        cardOptions: state.cards.options,
+                        selection: state.selection,
+                      ),
+                    if (state.gameStatus == GameStatus.revealed &&
+                        state.gameResult != null)
+                      SelectionsResultView(
+                        gameResult: state.gameResult!,
+                      ),
                   ],
                 );
               }
@@ -65,6 +74,73 @@ class ActiveGamePage extends StatelessWidget {
             },
           ),
         ),
+      ),
+    );
+  }
+}
+
+class SelectionsResultView extends StatelessWidget {
+  const SelectionsResultView({
+    super.key,
+    required this.gameResult,
+  });
+
+  final GameResult gameResult;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ...gameResult.selectionsResultData.map(
+            (resultData) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: cardHeight,
+                  width: 6,
+                  child: RotatedBox(
+                    quarterTurns: 3,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      child: LinearProgressIndicator(
+                        value: resultData.totalPercentage,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: cardHeight,
+                  width: cardWidth,
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      resultData.selection,
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  '${resultData.count} Vote',
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -87,7 +163,7 @@ class UserHandCards extends StatelessWidget {
       children: cardOptions
           .map(
             (option) => Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: OptionCard(
                 option: option,
                 selection: selection?.selection,
@@ -95,6 +171,26 @@ class UserHandCards extends StatelessWidget {
             ),
           )
           .toList(),
+    );
+  }
+}
+
+class OptionCardHidden extends StatelessWidget {
+  const OptionCardHidden({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: cardHeight,
+      width: cardWidth,
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        border: Border.all(
+          color: Colors.blue,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
     );
   }
 }
@@ -144,10 +240,16 @@ class OptionCard extends StatelessWidget {
 }
 
 class Board extends StatelessWidget {
-  const Board({super.key, required this.selections, required this.players});
+  const Board(
+      {super.key,
+      required this.selections,
+      required this.players,
+      required this.gameStatus});
 
   final List<PlayerCardSelection> selections;
   final List<UserPlayerEntity> players;
+
+  final GameStatus gameStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -163,9 +265,10 @@ class Board extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: topPlayers
               .map(
-                (player) => EmptyCardSelection(
+                (player) => CardOnBoardElement(
                   player: player,
                   userSelection: player.userSelection(selections),
+                  gameStatus: gameStatus,
                 ),
               )
               .toList(),
@@ -173,15 +276,17 @@ class Board extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
-              children: const [
+            const Column(
+              children: [
                 /* EmptyCardSelection(),
                 EmptyCardSelection(),*/
               ],
             ),
-            const CardTable(),
-            Column(
-              children: const [
+            CardTable(
+              gameStatus: gameStatus,
+            ),
+            const Column(
+              children: [
                 /*EmptyCardSelection(),
                 EmptyCardSelection(),*/
               ],
@@ -192,9 +297,10 @@ class Board extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: bottomPlayers
               .map(
-                (player) => EmptyCardSelection(
+                (player) => CardOnBoardElement(
                   player: player,
                   userSelection: player.userSelection(selections),
+                  gameStatus: gameStatus,
                 ),
               )
               .toList(),
@@ -205,10 +311,13 @@ class Board extends StatelessWidget {
 }
 
 class CardTable extends StatelessWidget {
-  const CardTable({super.key});
+  const CardTable({super.key, required this.gameStatus});
+
+  final GameStatus gameStatus;
 
   @override
   Widget build(BuildContext context) {
+    print('Game status $gameStatus');
     return Container(
       height: 160,
       width: 300,
@@ -225,52 +334,81 @@ class CardTable extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: SelectableText(
-          'Pick your cards!',
-          style: BasicStyles.simpleTitleStyle.copyWith(
-            fontSize: 14,
-          ),
-        ),
+        child: gameStatus == GameStatus.initial
+            ? SelectableText(
+                'Pick your cards!',
+                style: BasicStyles.simpleTitleStyle.copyWith(
+                  fontSize: 14,
+                ),
+              )
+            : gameStatus == GameStatus.selections
+                ? ElevatedButton(
+                    onPressed: () {
+                      context
+                          .read<ActiveGameBloc>()
+                          .add(ActiveGameRevealCards());
+                    },
+                    child: const Text('Reveal Cards'),
+                  )
+                : gameStatus == GameStatus.revealing
+                    ? const Text('Loading')
+                    : gameStatus == GameStatus.revealed
+                        ? ElevatedButton(
+                            onPressed: () {
+                              context
+                                  .read<ActiveGameBloc>()
+                                  .add(ActiveGameReset());
+                            },
+                            child: const Text('Start New Voting'),
+                          )
+                        : const Text('Error loading game status'),
       ),
     );
   }
 }
 
-class EmptyCardSelection extends StatelessWidget {
-  const EmptyCardSelection(
-      {super.key, required this.player, this.userSelection});
+class CardOnBoardElement extends StatelessWidget {
+  const CardOnBoardElement({
+    super.key,
+    required this.player,
+    required this.gameStatus,
+    this.userSelection,
+  });
 
   final UserPlayerEntity player;
   final String? userSelection;
+  final GameStatus gameStatus;
 
 //#/active-game/o532uOJ7DiYHudvjl8Eh
   @override
   Widget build(BuildContext context) {
-    print(userSelection);
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          userSelection != null
-              ? OptionCard(
-                  option: userSelection!,
-                  selection: userSelection,
-                )
-              : Container(
-                  height: cardHeight,
-                  width: cardWidth,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-          SizedBox(
-            height: 4,
+          if (gameStatus == GameStatus.revealed && userSelection != null)
+            OptionCard(
+              option: userSelection!,
+              selection: userSelection,
+            )
+          else
+            userSelection == null
+                ? Container(
+                    height: cardHeight,
+                    width: cardWidth,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  )
+                : const OptionCardHidden(),
+          const BasicSeparationSpace.vertical(
+            multiplier: 0.5,
           ),
           SelectableText(
             player.name,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w600,
             ),
           ),
