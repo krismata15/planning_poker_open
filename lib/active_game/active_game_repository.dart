@@ -5,7 +5,8 @@ class ActiveGameRepository {
   final GameDataSource _gameDataSource = GameDataSource();
 
   Future<Stream<DocumentSnapshot<Map<String, dynamic>>>> getActiveGame(
-      String gameId) async {
+    String gameId,
+  ) async {
     return _gameDataSource.getActiveGame(gameId);
   }
 

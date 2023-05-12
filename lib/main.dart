@@ -77,7 +77,7 @@ final GoRouter _router = GoRouter(
   routes: [
     GoRoute(
       path: RoutesNames.home,
-      builder: (context, state) => Home(),
+      builder: (context, state) => const Home(),
       redirect: (context, state) {
         print(context.read<AuthenticationBloc>().state);
         print(state.path);

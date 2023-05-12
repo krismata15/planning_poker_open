@@ -16,8 +16,6 @@ class DeckModel extends Equatable {
   });
 
   DeckModel.fromJsonFirebase(Map<String, dynamic> json, String uid) {
-    print('entrando aqui $uid');
-    print('entrando aqui ${json['name']}');
     id = uid;
     name = json['name'];
     options =

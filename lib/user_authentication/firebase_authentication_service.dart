@@ -38,8 +38,7 @@ class FirebaseAuthenticationService {
           .collection(FirebaseCollectionNames.usersCollection)
           .doc(userId)
           .set(data);
-    } catch (e, s) {
-      print('error $e -- $s');
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
@@ -47,7 +46,9 @@ class FirebaseAuthenticationService {
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw Exception('The password provided is too weak.');

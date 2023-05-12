@@ -63,7 +63,11 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
               vertical: BasicStyles.verticalPadding,
             ),
             child: BlocBuilder<CreateGameBloc, CreateGameState>(
+              buildWhen: (previous, current) {
+                return current is! CreateGameInProgress;
+              },
               builder: (context, state) {
+                print('State de create game: $state');
                 if (state is CreateGameGettingInitialData) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -73,8 +77,8 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                 if (state is CreateGameGotInitialData) {
                   return Column(
                     children: [
-                      Row(
-                        children: const [
+                      const Row(
+                        children: [
                           SelectableText(
                             'Create game',
                             style: BasicStyles.barTitleStyle,
@@ -107,7 +111,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                               multiplier: 1.5,
                             ),
                             DropdownButtonHideUnderline(
-                              child: DropdownButtonFormField2(
+                              child: DropdownButtonFormField2<String>(
                                 decoration: InputDecoration(
                                   isDense: true,
                                   label: const Text('Voting system'),
@@ -122,9 +126,9 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                                   offset: Offset(0, -10),
                                   padding: EdgeInsets.zero,
                                 ),
-                                onChanged: (value) {
+                                onChanged: (String? value) {
                                   setState(() {
-                                    selectedDeckId = value as String;
+                                    selectedDeckId = value;
                                   });
                                 },
                                 value: selectedDeckId,
@@ -163,7 +167,9 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                                         }
                                       : null,
                               child: isLoading
-                                  ? const CircularProgressIndicator()
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
                                   : const Text('Create game'),
                             )
                           ],
@@ -180,7 +186,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                 }
 
                 return const Center(
-                  child: Text('Error'),
+                  child: Text('Error in creating game'),
                 );
               },
             ),

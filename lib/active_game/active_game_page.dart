@@ -240,11 +240,12 @@ class OptionCard extends StatelessWidget {
 }
 
 class Board extends StatelessWidget {
-  const Board(
-      {super.key,
-      required this.selections,
-      required this.players,
-      required this.gameStatus});
+  const Board({
+    super.key,
+    required this.selections,
+    required this.players,
+    required this.gameStatus,
+  });
 
   final List<PlayerCardSelection> selections;
   final List<UserPlayerEntity> players;
@@ -317,7 +318,6 @@ class CardTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Game status $gameStatus');
     return Container(
       height: 160,
       width: 300,
@@ -418,5 +418,5 @@ class CardOnBoardElement extends StatelessWidget {
   }
 }
 
-final double cardWidth = 40;
-final double cardHeight = 68;
+const double cardWidth = 40;
+const double cardHeight = 68;

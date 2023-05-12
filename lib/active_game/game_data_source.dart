@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:planning_poker_open/active_game/game_model.dart';
 import 'package:planning_poker_open/active_game/game_results_model.dart';
 import 'package:planning_poker_open/active_game/player_card_selection.dart';
+import 'package:planning_poker_open/firebase_collection_names.dart';
 
 class GameDataSource {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -11,8 +12,10 @@ class GameDataSource {
       String gameId) async {
     await checkIfUserExistOrCreateOnGame(gameId);
 
-    final Stream<DocumentSnapshot<Map<String, dynamic>>> gameReference =
-        _db.collection('games').doc(gameId).snapshots();
+    final Stream<DocumentSnapshot<Map<String, dynamic>>> gameReference = _db
+        .collection(FirebaseCollectionNames.gamesCollection)
+        .doc(gameId)
+        .snapshots();
 
     return gameReference;
   }
@@ -21,7 +24,7 @@ class GameDataSource {
     final User? user = FirebaseAuth.instance.currentUser;
 
     final DocumentReference<Map<String, dynamic>> gameReference =
-        _db.collection('games').doc(gameId);
+        _db.collection(FirebaseCollectionNames.gamesCollection).doc(gameId);
 
     final documentReference = await gameReference.get();
 
@@ -47,7 +50,7 @@ class GameDataSource {
     final User? user = FirebaseAuth.instance.currentUser;
 
     final DocumentReference<Map<String, dynamic>> gameReference =
-        _db.collection('games').doc(gameId);
+        _db.collection(FirebaseCollectionNames.gamesCollection).doc(gameId);
 
     final documentSnapshot = await gameReference.get();
 
@@ -67,7 +70,7 @@ class GameDataSource {
     };
 
     final int index =
-        selections.indexWhere((element) => element['player_id'] == user!.uid);
+        selections.indexWhere((element) => element['player_id'] == user.uid);
 
     if (index > -1) {
       selections[index]['selection'] = option;
@@ -104,7 +107,8 @@ class GameDataSource {
     final List<PlayerCardSelection> playerCardSelections =
         gameModel.playerCardSelections;
 
-    final gameResultsDocumentReference = _db.collection('games_results').doc();
+    final gameResultsDocumentReference =
+        _db.collection(FirebaseCollectionNames.gamesResultsCollection).doc();
 
     final HistoricGameResult gameResults = HistoricGameResult(
       id: gameResultsDocumentReference.id,

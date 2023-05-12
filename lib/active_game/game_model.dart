@@ -71,7 +71,6 @@ class GameModel extends Equatable {
     map['selections'] = playerCardSelections.map((e) => e.toJson()).toList();
     map['status'] = status.index;
     map['game_result'] = gameResult?.toJson();
-    ;
     return map;
   }
 

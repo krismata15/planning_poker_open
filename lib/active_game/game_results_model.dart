@@ -3,11 +3,12 @@ import 'package:planning_poker_open/active_game/game_model.dart';
 import 'package:planning_poker_open/active_game/player_card_selection.dart';
 
 class HistoricGameResult {
-  HistoricGameResult(
-      {required this.id,
-      required this.gameData,
-      required this.selectionsCount,
-      required this.selectionsResultData});
+  HistoricGameResult({
+    required this.id,
+    required this.gameData,
+    required this.selectionsCount,
+    required this.selectionsResultData,
+  });
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -26,20 +27,25 @@ class HistoricGameResult {
 }
 
 class SelectionsResultData extends Equatable {
-  SelectionsResultData({
+  const SelectionsResultData({
     required this.selection,
     required this.count,
     required this.totalPercentage,
   });
 
   factory SelectionsResultData.fromPlayerSelections(
-      List<PlayerCardSelection> playerCardSelections, String selection) {
+    List<PlayerCardSelection> playerCardSelections,
+    String selection,
+  ) {
     final count = playerCardSelections
         .where((element) => element.selection == selection)
         .length;
     final totalPercentage = count / playerCardSelections.length;
     return SelectionsResultData(
-        selection: selection, count: count, totalPercentage: totalPercentage);
+      selection: selection,
+      count: count,
+      totalPercentage: totalPercentage,
+    );
   }
 
   factory SelectionsResultData.fromJson(Map<String, dynamic> json) =>
@@ -66,14 +72,17 @@ class SelectionsResultData extends Equatable {
 }
 
 class GameResult {
-  GameResult(
-      {required this.selectionsCount, required this.selectionsResultData});
+  GameResult({
+    required this.selectionsCount,
+    required this.selectionsResultData,
+  });
 
   factory GameResult.fromJson(Map<String, dynamic> json) => GameResult(
         selectionsCount: json['selections_count'] as int,
         selectionsResultData: (json['selections_result_data'] as List)
             .map(
-                (e) => SelectionsResultData.fromJson(e as Map<String, dynamic>))
+              (e) => SelectionsResultData.fromJson(e as Map<String, dynamic>),
+            )
             .toList(),
       );
 
