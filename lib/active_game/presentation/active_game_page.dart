@@ -60,6 +60,7 @@ class ActiveGamePage extends StatelessWidget {
                       UserHandCards(
                         cardOptions: state.cards.options,
                         selection: state.selection,
+                        gameStatus: state.gameStatus,
                       ),
                     if (state.gameStatus == GameStatus.revealed &&
                         state.gameResult != null)
@@ -150,27 +151,41 @@ class UserHandCards extends StatelessWidget {
   const UserHandCards({
     super.key,
     required this.cardOptions,
+    required this.gameStatus,
     this.selection,
   });
 
   final List<String> cardOptions;
   final PlayerCardSelectionModel? selection;
+  final GameStatus gameStatus;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: cardOptions
-          .map(
-            (option) => Padding(
-              padding: const EdgeInsets.all(8),
-              child: OptionCard(
-                option: option,
-                selection: selection?.selection,
-              ),
-            ),
-          )
-          .toList(),
+    return Scrollbar(
+      thumbVisibility: true,
+      child: SingleChildScrollView(
+        primary: true,
+        scrollDirection: Axis.horizontal,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: cardOptions
+                .map(
+                  (option) => Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: OptionCard(
+                      option: option,
+                      selection: selection?.selection,
+                      enableSelection: gameStatus == GameStatus.selections ||
+                          gameStatus == GameStatus.initial,
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -196,20 +211,28 @@ class OptionCardHidden extends StatelessWidget {
 }
 
 class OptionCard extends StatelessWidget {
-  const OptionCard({super.key, required this.option, this.selection});
+  const OptionCard({
+    super.key,
+    required this.option,
+    required this.enableSelection,
+    this.selection,
+  });
 
   final String option;
   final String? selection;
+  final bool enableSelection;
 
   @override
   Widget build(BuildContext context) {
     final bool isSelected = selection == option;
     return GestureDetector(
-      onTap: () {
-        context
-            .read<ActiveGameBloc>()
-            .add(ActiveGameSelectOption(option: option));
-      },
+      onTap: enableSelection
+          ? () {
+              context
+                  .read<ActiveGameBloc>()
+                  .add(ActiveGameSelectOption(option: option));
+            }
+          : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -217,9 +240,13 @@ class OptionCard extends StatelessWidget {
             height: cardHeight,
             width: cardWidth,
             decoration: BoxDecoration(
-              color: isSelected ? Colors.blue : Colors.white,
+              color: isSelected && !enableSelection
+                  ? Colors.grey
+                  : isSelected
+                      ? Colors.blue
+                      : Colors.white,
               border: Border.all(
-                color: Colors.blue,
+                color: !enableSelection ? Colors.grey : Colors.blue,
                 width: 2,
               ),
               borderRadius: BorderRadius.circular(10),
@@ -228,7 +255,11 @@ class OptionCard extends StatelessWidget {
               child: Text(
                 option,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.blue,
+                  color: isSelected
+                      ? Colors.white
+                      : !enableSelection
+                          ? Colors.grey
+                          : Colors.blue,
                 ),
               ),
             ),
@@ -351,7 +382,9 @@ class CardTable extends StatelessWidget {
                     child: const Text('Reveal Cards'),
                   )
                 : gameStatus == GameStatus.revealing
-                    ? const Text('Loading')
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
                     : gameStatus == GameStatus.revealed
                         ? ElevatedButton(
                             onPressed: () {
@@ -391,6 +424,7 @@ class CardOnBoardElement extends StatelessWidget {
             OptionCard(
               option: userSelection!,
               selection: userSelection,
+              enableSelection: true,
             )
           else
             userSelection == null
