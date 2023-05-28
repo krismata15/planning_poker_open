@@ -7,13 +7,14 @@ class AuthenticationInitial extends AuthenticationState {}
 
 class AuthenticationInProgress extends AuthenticationState {}
 
-class AuthenticationSuccess extends AuthenticationState with EquatableMixin {
-  AuthenticationSuccess({required this.username});
+class AuthenticationAuthenticated extends AuthenticationState
+    with EquatableMixin {
+  AuthenticationAuthenticated({required this.user});
 
-  final String username;
+  final UserApp user;
 
   @override
-  List<Object?> get props => [username];
+  List<Object?> get props => [user];
 }
 
 class AuthenticationFailure extends AuthenticationState {}

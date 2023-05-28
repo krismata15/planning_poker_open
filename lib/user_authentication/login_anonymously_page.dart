@@ -33,9 +33,8 @@ class _LoginAnonymouslyPageState extends State<LoginAnonymouslyPage> {
           });
         }
 
-        if (state is AuthenticationSuccess) {
+        if (state is AuthenticationAuthenticated) {
           if (widget.guardedRoute != null) {
-            print('enter here and goind to ${widget.guardedRoute}');
             context.go(widget.guardedRoute!);
           }
         }

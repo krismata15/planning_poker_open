@@ -20,9 +20,13 @@ class BasicSeparationSpace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double separation = BasicStyles.standardSeparationVertical;
-    return SizedBox(
-      height: separation * multiplier,
-    );
+    return separationType == SeparationType.vertical
+        ? SizedBox(
+            height: separation * multiplier,
+          )
+        : SizedBox(
+            width: separation * multiplier,
+          );
   }
 }
 

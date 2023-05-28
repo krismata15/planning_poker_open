@@ -9,7 +9,6 @@ import 'package:planning_poker_open/active_game/presentation/active_game_page.da
 import 'package:planning_poker_open/create_game/presentation/create_new_game_page.dart';
 import 'package:planning_poker_open/firebase_options.dart';
 import 'package:planning_poker_open/home.dart';
-import 'package:planning_poker_open/shared/utils/firebase_populate_script.dart';
 import 'package:planning_poker_open/shared/utils/routes_names.dart';
 import 'package:planning_poker_open/user_authentication/bloc/authentication_bloc.dart';
 import 'package:planning_poker_open/user_authentication/login_anonymously_page.dart';
@@ -24,7 +23,7 @@ void main() async {
 
   //await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   //FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-  await FirebasePopulateScript.populate();
+  //await FirebasePopulateScript.populate();
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -36,13 +35,27 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final AuthenticationBloc authenticationBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    authenticationBloc = AuthenticationBloc()
+      ..add(AuthenticationInitialCheck());
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthenticationBloc(),
+      create: (context) => authenticationBloc,
       child: Builder(
         builder: (context) {
           return MaterialApp.router(

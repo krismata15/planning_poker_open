@@ -19,4 +19,9 @@ abstract class BasicStyles {
     fontSize: 18,
     fontWeight: FontWeight.w500,
   );
+
+  static const TextStyle subTitleStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+  );
 }

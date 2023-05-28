@@ -23,13 +23,17 @@ dependencies:
   equatable: ^2.0.5
   google_sign_in: ^6.1.0
   collection: ^1.17.1
+  flutter_svg: ^2.0.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  very_good_analysis: ^4.0.0+1
+  very_good_analysis: ^5.0.0+1
 
 flutter:
-
   uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/img/

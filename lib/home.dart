@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:planning_poker_open/shared/presentation/widgets/basic_separation_bloc.dart';
+import 'package:planning_poker_open/shared/presentation/widgets/basic_separation_space.dart';
+import 'package:planning_poker_open/shared/presentation/widgets/basic_toolbar.dart';
 import 'package:planning_poker_open/shared/styles/basic_styles.dart';
 import 'package:planning_poker_open/shared/utils/routes_names.dart';
 
@@ -12,12 +13,15 @@ class Home extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const BasicToolBar(
+              showCreateNewGameButton: true,
+            ),
             const Text(
-              'This is de home page',
+              'Free Scrum Poker for agile development teams',
               style: BasicStyles.titleStyle,
             ),
+            const Text('Use it for free or deploy your own version'),
             const BasicSeparationSpace.horizontal(),
             ElevatedButton(
               onPressed: () {

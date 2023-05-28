@@ -5,7 +5,8 @@ import 'package:planning_poker_open/active_game/data/models/game_results_model.d
 import 'package:planning_poker_open/active_game/data/models/player_card_selection.dart';
 import 'package:planning_poker_open/active_game/domain/entities/user_player_entity.dart';
 import 'package:planning_poker_open/active_game/presentation/bloc/active_game_bloc.dart';
-import 'package:planning_poker_open/shared/presentation/widgets/basic_separation_bloc.dart';
+import 'package:planning_poker_open/shared/presentation/widgets/active_game_toolbar.dart';
+import 'package:planning_poker_open/shared/presentation/widgets/basic_separation_space.dart';
 import 'package:planning_poker_open/shared/styles/basic_styles.dart';
 
 class ActiveGamePage extends StatelessWidget {
@@ -20,60 +21,66 @@ class ActiveGamePage extends StatelessWidget {
         gameId: gameId!,
       )..add(ActiveGameGetInitialData(gameId: gameId!)),
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: BasicStyles.horizontalPadding,
-            vertical: BasicStyles.verticalPadding,
-          ),
-          child: BlocBuilder<ActiveGameBloc, ActiveGameState>(
-            builder: (context, state) {
-              if (state is ActiveGameGettingInitialData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+        body: BlocBuilder<ActiveGameBloc, ActiveGameState>(
+          builder: (context, state) {
+            if (state is ActiveGameGettingInitialData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-              if (state is ActiveGameUpdated) {
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          state.gameName,
-                          style: BasicStyles.barTitleStyle,
-                        ),
-                        Text(
-                          state.activeUser.name,
-                          style: BasicStyles.titleStyle,
-                        ),
-                      ],
+            if (state is ActiveGameUpdated) {
+              return Column(
+                children: [
+                  ActiveGameToolBar(
+                    title: Text(
+                      state.gameName,
+                      style: BasicStyles.barTitleStyle,
                     ),
-                    Expanded(
-                      child: Board(
-                        players: state.players,
-                        selections: state.playerCardSelections,
-                        gameStatus: state.gameStatus,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        BasicStyles.horizontalPadding,
+                        BasicStyles.verticalPadding,
+                        BasicStyles.horizontalPadding,
+                        12,
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 40,
+                              ),
+                              child: Board(
+                                players: state.players,
+                                selections: state.playerCardSelections,
+                                gameStatus: state.gameStatus,
+                              ),
+                            ),
+                          ),
+                          if (state.gameStatus != GameStatus.revealed)
+                            UserHandCards(
+                              cardOptions: state.cards.options,
+                              selection: state.selection,
+                              gameStatus: state.gameStatus,
+                            ),
+                          if (state.gameStatus == GameStatus.revealed &&
+                              state.gameResult != null)
+                            SelectionsResultView(
+                              gameResult: state.gameResult!,
+                            ),
+                        ],
                       ),
                     ),
-                    if (state.gameStatus != GameStatus.revealed)
-                      UserHandCards(
-                        cardOptions: state.cards.options,
-                        selection: state.selection,
-                        gameStatus: state.gameStatus,
-                      ),
-                    if (state.gameStatus == GameStatus.revealed &&
-                        state.gameResult != null)
-                      SelectionsResultView(
-                        gameResult: state.gameResult!,
-                      ),
-                  ],
-                );
-              }
+                  ),
+                ],
+              );
+            }
 
-              return const Text('Error');
-            },
-          ),
+            return const Text('Error');
+          },
         ),
       ),
     );
@@ -210,7 +217,7 @@ class OptionCardHidden extends StatelessWidget {
   }
 }
 
-class OptionCard extends StatelessWidget {
+class OptionCard extends StatefulWidget {
   const OptionCard({
     super.key,
     required this.option,
@@ -223,48 +230,80 @@ class OptionCard extends StatelessWidget {
   final bool enableSelection;
 
   @override
+  State<OptionCard> createState() => _OptionCardState();
+}
+
+class _OptionCardState extends State<OptionCard> {
+  bool isHover = false;
+  String? localSelection;
+
+  @override
   Widget build(BuildContext context) {
-    final bool isSelected = selection == option;
-    return GestureDetector(
-      onTap: enableSelection
-          ? () {
-              context
-                  .read<ActiveGameBloc>()
-                  .add(ActiveGameSelectOption(option: option));
-            }
-          : null,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: cardHeight,
-            width: cardWidth,
-            decoration: BoxDecoration(
-              color: isSelected && !enableSelection
-                  ? Colors.grey
-                  : isSelected
-                      ? Colors.blue
-                      : Colors.white,
-              border: Border.all(
-                color: !enableSelection ? Colors.grey : Colors.blue,
-                width: 2,
+    final bool isSelected = widget.selection == widget.option;
+    return MouseRegion(
+      cursor: widget.enableSelection
+          ? SystemMouseCursors.click
+          : SystemMouseCursors.basic,
+      onEnter: (_) {
+        if (widget.enableSelection) {
+          setState(() {
+            isHover = true;
+          });
+        }
+      },
+      onExit: (_) {
+        if (widget.enableSelection) {
+          setState(() {
+            isHover = false;
+          });
+        }
+      },
+      child: GestureDetector(
+        onTap: widget.enableSelection
+            ? () {
+                context
+                    .read<ActiveGameBloc>()
+                    .add(ActiveGameSelectOption(option: widget.option));
+              }
+            : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              height: cardHeight,
+              width: cardWidth,
+              decoration: BoxDecoration(
+                color: isSelected && !widget.enableSelection
+                    ? Colors.grey
+                    : isSelected
+                        ? Colors.blue
+                        : isHover
+                            ? Colors.blue.withOpacity(0.2)
+                            : Colors.white,
+                border: Border.all(
+                  color: !widget.enableSelection ? Colors.grey : Colors.blue,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(10),
               ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text(
-                option,
-                style: TextStyle(
-                  color: isSelected
-                      ? Colors.white
-                      : !enableSelection
-                          ? Colors.grey
-                          : Colors.blue,
+              child: Center(
+                child: Text(
+                  widget.option,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: isSelected
+                        ? Colors.white
+                        : !widget.enableSelection
+                            ? Colors.grey
+                            : Colors.blue,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -351,9 +390,9 @@ class CardTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 160,
-      width: 300,
+      width: 320,
       decoration: BoxDecoration(
-        color: Colors.blue.shade200.withOpacity(0.8),
+        color: Colors.blue.shade100.withOpacity(0.8),
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
@@ -369,7 +408,7 @@ class CardTable extends StatelessWidget {
             ? SelectableText(
                 'Pick your cards!',
                 style: BasicStyles.simpleTitleStyle.copyWith(
-                  fontSize: 14,
+                  fontSize: 16,
                 ),
               )
             : gameStatus == GameStatus.selections
@@ -452,5 +491,5 @@ class CardOnBoardElement extends StatelessWidget {
   }
 }
 
-const double cardWidth = 40;
-const double cardHeight = 68;
+const double cardWidth = 46;
+const double cardHeight = 80;

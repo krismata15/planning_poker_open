@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planning_poker_open/create_game/domain/entities/deck_entity.dart';
 import 'package:planning_poker_open/create_game/presentation/bloc/create_game_bloc.dart';
-import 'package:planning_poker_open/shared/presentation/widgets/basic_separation_bloc.dart';
+import 'package:planning_poker_open/shared/presentation/widgets/basic_separation_space.dart';
+import 'package:planning_poker_open/shared/presentation/widgets/basic_toolbar.dart';
 import 'package:planning_poker_open/shared/styles/basic_styles.dart';
 import 'package:planning_poker_open/shared/utils/routes_names.dart';
 
@@ -56,34 +57,32 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
           }
         },
         child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: BasicStyles.horizontalPadding,
-              vertical: BasicStyles.verticalPadding,
-            ),
-            child: BlocBuilder<CreateGameBloc, CreateGameState>(
-              buildWhen: (previous, current) {
-                return current is! CreateGameInProgress;
-              },
-              builder: (context, state) {
-                if (state is CreateGameGettingInitialData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+          body: BlocBuilder<CreateGameBloc, CreateGameState>(
+            buildWhen: (previous, current) {
+              return current is! CreateGameInProgress;
+            },
+            builder: (context, state) {
+              if (state is CreateGameGettingInitialData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-                if (state is CreateGameGotInitialData) {
-                  return Column(
-                    children: [
-                      const Row(
-                        children: [
-                          SelectableText(
-                            'Create game',
-                            style: BasicStyles.barTitleStyle,
-                          ),
-                        ],
+              if (state is CreateGameGotInitialData) {
+                return Column(
+                  children: [
+                    const BasicToolBar(
+                      title: SelectableText(
+                        'Create game',
+                        style: BasicStyles.barTitleStyle,
                       ),
-                      Expanded(
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: BasicStyles.horizontalPadding,
+                          vertical: BasicStyles.verticalPadding,
+                        ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -163,21 +162,21 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                           ],
                         ),
                       ),
-                    ],
-                  );
-                }
-
-                if (state is CreateGameSuccess) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                return const Center(
-                  child: Text('Error in creating game'),
+                    ),
+                  ],
                 );
-              },
-            ),
+              }
+
+              if (state is CreateGameSuccess) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return const Center(
+                child: Text('Error in creating game'),
+              );
+            },
           ),
         ),
       ),

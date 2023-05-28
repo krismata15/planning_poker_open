@@ -52,40 +52,36 @@ class GameDataSource {
     final DocumentReference<Map<String, dynamic>> gameReference =
         _db.collection(FirebaseCollectionNames.gamesCollection).doc(gameId);
 
-    final documentSnapshot = await gameReference.get();
+    await _db.runTransaction((transaction) async {
+      final documentSnapshot = await transaction.get(gameReference);
+      final GameStatus actualGameStatus =
+          gameStatusFromString(documentSnapshot.data()!['status']);
 
-    final GameStatus actualGameStatus =
-        gameStatusFromString(documentSnapshot.data()!['status']);
+      if (actualGameStatus != GameStatus.selections &&
+          actualGameStatus != GameStatus.initial) {
+        return;
+      }
 
-    if (actualGameStatus != GameStatus.selections &&
-        actualGameStatus != GameStatus.initial) {
-      return;
-    }
+      final List<dynamic> selections = documentSnapshot.data()!['selections'];
+      final Map<String, dynamic> playerData = {
+        'player_id': user!.uid,
+        'selection': option,
+      };
 
-    final List<dynamic> selections = documentSnapshot.data()!['selections'];
+      final int index =
+          selections.indexWhere((element) => element['player_id'] == user.uid);
 
-    final Map<String, dynamic> playerData = {
-      'player_id': user!.uid,
-      'selection': option,
-    };
+      if (index > -1) {
+        selections[index]['selection'] = option;
+      } else {
+        selections.add(playerData);
+      }
 
-    final int index =
-        selections.indexWhere((element) => element['player_id'] == user.uid);
-
-    if (index > -1) {
-      selections[index]['selection'] = option;
-    } else {
-      selections.add(playerData);
-    }
-
-    await gameReference.set(
-        {
-          'status': GameStatus.selections.name,
-          'selections': selections,
-        },
-        SetOptions(
-          merge: true,
-        ));
+      transaction.update(gameReference, {
+        'status': GameStatus.selections.name,
+        'selections': selections,
+      });
+    });
   }
 
   Future<void> revealCards(String gameId) async {

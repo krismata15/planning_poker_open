@@ -10,7 +10,40 @@ class FirebaseAuthenticationService {
     return _firebaseAuth.authStateChanges();
   }
 
-  Future<void> signInAnonymously(String username) async {
+  Future<Map<String, dynamic>?> checkIfUserIsLoggedIn() async {
+    final User? user = _firebaseAuth.currentUser;
+    print('User initial status ${user != null ? 'logged in' : 'logged out'}');
+    if (user != null) {
+      await user.reload();
+      return (await _db
+              .collection(FirebaseCollectionNames.usersCollection)
+              .doc(user.uid)
+              .get())
+          .data()!;
+    }
+    return null;
+  }
+
+  Future<Map<String, dynamic>> editUserData(String username) async {
+    final User? user = _firebaseAuth.currentUser;
+    if (user != null) {
+      await user.updateDisplayName(username);
+      await _db
+          .collection(FirebaseCollectionNames.usersCollection)
+          .doc(user.uid)
+          .update({
+        'username': username,
+      });
+      return (await _db
+              .collection(FirebaseCollectionNames.usersCollection)
+              .doc(user.uid)
+              .get())
+          .data()!;
+    }
+    throw Exception('User not found');
+  }
+
+  Future<Map<String, dynamic>> signInAnonymously(String username) async {
     try {
       final UserCredential userCredential =
           await _firebaseAuth.signInAnonymously();
@@ -23,21 +56,17 @@ class FirebaseAuthenticationService {
           .collection(FirebaseCollectionNames.usersCollection)
           .doc(userId)
           .set({
-        'userId': userId,
+        'id': userId,
+        'username': username,
+        'type': 'anonymous',
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      final Map<String, dynamic> data = {
-        'id': userId,
-        'username': username,
-        'createdAt': FieldValue.serverTimestamp(),
-        'type': 'anonymous',
-      };
-
-      await _db
-          .collection(FirebaseCollectionNames.usersCollection)
-          .doc(userId)
-          .set(data);
+      return (await _db
+              .collection(FirebaseCollectionNames.usersCollection)
+              .doc(userId)
+              .get())
+          .data()!;
     } catch (e) {
       throw Exception(e.toString());
     }
