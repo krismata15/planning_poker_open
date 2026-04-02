@@ -77,27 +77,29 @@ class Home extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 48),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _FeatureChip(
-                            icon: Icons.bolt_outlined,
-                            label: 'Real-time',
-                            colorScheme: colorScheme,
-                          ),
-                          const SizedBox(width: 12),
-                          _FeatureChip(
-                            icon: Icons.group_outlined,
-                            label: 'Collaborative',
-                            colorScheme: colorScheme,
-                          ),
-                          const SizedBox(width: 12),
-                          _FeatureChip(
-                            icon: Icons.lock_open_outlined,
-                            label: 'Open source',
-                            colorScheme: colorScheme,
-                          ),
-                        ],
+                      FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _FeatureChip(
+                              icon: Icons.bolt_outlined,
+                              label: 'Real-time',
+                              colorScheme: colorScheme,
+                            ),
+                            const SizedBox(width: 12),
+                            _FeatureChip(
+                              icon: Icons.group_outlined,
+                              label: 'Collaborative',
+                              colorScheme: colorScheme,
+                            ),
+                            const SizedBox(width: 12),
+                            _FeatureChip(
+                              icon: Icons.lock_open_outlined,
+                              label: 'Open source',
+                              colorScheme: colorScheme,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
