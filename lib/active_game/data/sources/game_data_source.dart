@@ -44,6 +44,7 @@ class GameDataSource {
         transaction.update(gameReference, {
           'players': players,
           'active_players': players.length,
+          'player_ids': FieldValue.arrayUnion([user.uid]),
         });
       }
     });

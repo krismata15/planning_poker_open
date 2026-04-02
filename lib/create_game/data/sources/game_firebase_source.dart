@@ -8,7 +8,6 @@ class GameFirebaseSource {
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
   Future<String> createGame(String deckId, String? name) async {
-    print('Llamando esta deck $deckId');
     final DocumentSnapshot<DeckModel> deck = await db
         .collection(FirebaseCollectionNames.decksCollection)
         .doc(deckId)
@@ -23,9 +22,10 @@ class GameFirebaseSource {
 
     final gameData = <String, dynamic>{
       'name': name ?? 'Planning Poker Game',
+      'player_ids': [user!.uid],
       'players': [
         {
-          'id': user!.uid,
+          'id': user.uid,
           'position': 1,
           'name': user.displayName,
         },

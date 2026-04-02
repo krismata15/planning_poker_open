@@ -9,6 +9,7 @@ import 'package:planning_poker_open/active_game/presentation/active_game_page.da
 import 'package:planning_poker_open/create_game/presentation/create_new_game_page.dart';
 import 'package:planning_poker_open/firebase_options.dart';
 import 'package:planning_poker_open/home.dart';
+import 'package:planning_poker_open/my_games/presentation/my_games_page.dart';
 import 'package:planning_poker_open/shared/utils/routes_names.dart';
 import 'package:planning_poker_open/user_authentication/bloc/authentication_bloc.dart';
 import 'package:planning_poker_open/user_authentication/login_anonymously_page.dart';
@@ -122,6 +123,11 @@ final GoRouter _router = GoRouter(
           name: RoutesNames.createGame,
           path: RoutesNames.createGame,
           builder: (context, state) => const CreateNewGamePage(),
+        ),
+        GoRoute(
+          name: RoutesNames.myGames,
+          path: RoutesNames.myGames,
+          builder: (context, state) => const MyGamesPage(),
         ),
         GoRoute(
           name: RoutesNames.activeGame,
