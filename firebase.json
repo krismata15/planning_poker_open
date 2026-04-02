@@ -60,6 +60,15 @@
             "value": "no-cache"
           }
         ]
+      },
+      {
+        "source": "flutter_bootstrap.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
       }
     ],
     "rewrites": [
@@ -70,4 +79,3 @@
     ]
   }
 }
-

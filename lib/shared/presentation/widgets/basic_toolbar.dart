@@ -220,9 +220,9 @@ class _MobileMenuButton extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Icon(
-                Icons.menu_rounded,
+                Icons.menu,
                 size: 18,
-                color: colorScheme.onSurfaceVariant,
+                color: colorScheme.primary,
               ),
             ],
           ),
@@ -700,12 +700,6 @@ class _UserInfoTile extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
-                    ),
-                    const SizedBox(width: 6),
-                    Icon(
-                      Icons.edit_outlined,
-                      size: 14,
-                      color: colorScheme.onSurfaceVariant,
                     ),
                   ],
                 ),
