@@ -69,6 +69,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
               }
 
               if (state is CreateGameGotInitialData) {
+                final colorScheme = Theme.of(context).colorScheme;
                 return Column(
                   children: [
                     const BasicToolBar(
@@ -78,88 +79,143 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                       ),
                     ),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: BasicStyles.horizontalPadding,
-                          vertical: BasicStyles.verticalPadding,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const SelectableText(
-                              'Choose a name and a voting system for your game.',
-                              textAlign: TextAlign.center,
-                              style: BasicStyles.simpleTitleStyle,
-                            ),
-                            const BasicSeparationSpace.vertical(
-                              multiplier: 2,
-                            ),
-                            TextField(
-                              decoration: const InputDecoration(
-                                label: Text('Game name'),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  gamesName = value;
-                                });
-                              },
-                            ),
-                            const BasicSeparationSpace.vertical(
-                              multiplier: 1.5,
-                            ),
-                            LayoutBuilder(
-                              builder: (BuildContext context, constraints) {
-                                return DropdownMenu(
-                                  width: constraints.maxWidth,
-                                  onSelected: (String? value) {
-                                    setState(() {
-                                      selectedDeckId = value;
-                                    });
-                                  },
-                                  initialSelection: selectedDeckId,
-                                  label: const Text('Voting system'),
-                                  dropdownMenuEntries: decks!
-                                      .map(
-                                        (deck) => DropdownMenuEntry(
-                                          value: deck.id,
-                                          label:
-                                              '${deck.name} ( ${deck.options.join(', ')} )',
-                                        ),
-                                      )
-                                      .toList(),
-                                );
-                              },
-                            ),
-                            const BasicSeparationSpace.vertical(
-                              multiplier: 2,
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: Size(
-                                  MediaQuery.of(context).size.width * 0.7,
-                                  50,
+                      child: Center(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: BasicStyles.horizontalPadding,
+                            vertical: BasicStyles.verticalPadding,
+                          ),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 480),
+                            child: Card(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                side: BorderSide(
+                                  color: colorScheme.outlineVariant,
                                 ),
                               ),
-                              onPressed: isLoading
-                                  ? () {}
-                                  : createGame
-                                      ? () {
-                                          context.read<CreateGameBloc>().add(
-                                                CreateGame(
-                                                  deckId: selectedDeckId!,
-                                                  gameName: gamesName,
+                              child: Padding(
+                                padding: const EdgeInsets.all(32),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Icon(
+                                      Icons.style_outlined,
+                                      size: 48,
+                                      color: colorScheme.primary,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'New Game',
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Choose a name and a voting system for your game.',
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 32),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        label: Text('Game name'),
+                                        prefixIcon:
+                                            Icon(Icons.edit_outlined),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          gamesName = value;
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+                                    LayoutBuilder(
+                                      builder: (BuildContext context,
+                                          constraints) {
+                                        return DropdownMenu(
+                                          width: constraints.maxWidth,
+                                          leadingIcon: const Icon(
+                                              Icons.category_outlined),
+                                          onSelected: (String? value) {
+                                            setState(() {
+                                              selectedDeckId = value;
+                                            });
+                                          },
+                                          initialSelection: selectedDeckId,
+                                          label: const Text('Voting system'),
+                                          dropdownMenuEntries: decks!
+                                              .map(
+                                                (deck) => DropdownMenuEntry(
+                                                  value: deck.id,
+                                                  label:
+                                                      '${deck.name} ( ${deck.options.join(', ')} )',
                                                 ),
-                                              );
-                                        }
-                                      : null,
-                              child: isLoading
-                                  ? const CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                  : const Text('Create game'),
-                            )
-                          ],
+                                              )
+                                              .toList(),
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(height: 32),
+                                    FilledButton.icon(
+                                      icon: isLoading
+                                          ? const SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child:
+                                                  CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          : const Icon(Icons.play_arrow),
+                                      label: const Text('Create game'),
+                                      style: FilledButton.styleFrom(
+                                        minimumSize:
+                                            const Size(double.infinity, 52),
+                                        textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      onPressed: isLoading
+                                          ? null
+                                          : createGame
+                                              ? () {
+                                                  context
+                                                      .read<CreateGameBloc>()
+                                                      .add(
+                                                        CreateGame(
+                                                          deckId:
+                                                              selectedDeckId!,
+                                                          gameName: gamesName,
+                                                        ),
+                                                      );
+                                                }
+                                              : null,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
