@@ -17,7 +17,7 @@ abstract class FirebasePopulateScript {
         .count()
         .get();
 
-    if (aggregateQuery.count > 0) {
+    if ((aggregateQuery.count ?? 0) > 0) {
       return;
     }
     for (final deck in standardDecks) {

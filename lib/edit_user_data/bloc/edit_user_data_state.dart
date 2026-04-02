@@ -1,19 +1,18 @@
 part of 'edit_user_data_bloc.dart';
 
-@immutable
-abstract class EditUserDataState {}
+sealed class EditUserDataState {}
 
-class EditUserDataInitial extends EditUserDataState {}
+final class EditUserDataInitial extends EditUserDataState {}
 
-class EditUserDataLoading extends EditUserDataState {}
+final class EditUserDataLoading extends EditUserDataState {}
 
-class EditUserDataSuccess extends EditUserDataState {
+final class EditUserDataSuccess extends EditUserDataState {
   EditUserDataSuccess({required this.userAppNewData});
 
   final UserApp userAppNewData;
 }
 
-class EditUserDataFailure extends EditUserDataState {
+final class EditUserDataFailure extends EditUserDataState {
   EditUserDataFailure({
     required this.message,
   });

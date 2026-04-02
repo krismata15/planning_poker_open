@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planning_poker_open/user_authentication/auth_repository.dart';
 import 'package:planning_poker_open/user_authentication/models/user_app.dart';

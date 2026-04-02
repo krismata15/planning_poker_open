@@ -41,7 +41,7 @@ class BasicToolBar extends StatelessWidget {
                     context.go(RoutesNames.home);
                   },
                   child: SvgPicture.asset(
-                    'img/planning_poker_icon.svg',
+                    'assets/img/planning_poker_icon.svg',
                     colorFilter: const ColorFilter.mode(
                       Colors.blueAccent,
                       BlendMode.srcIn,

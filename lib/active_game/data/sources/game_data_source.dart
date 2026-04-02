@@ -26,24 +26,27 @@ class GameDataSource {
     final DocumentReference<Map<String, dynamic>> gameReference =
         _db.collection(FirebaseCollectionNames.gamesCollection).doc(gameId);
 
-    final documentReference = await gameReference.get();
+    await _db.runTransaction((transaction) async {
+      final documentSnapshot = await transaction.get(gameReference);
+      final List<dynamic> players =
+          List<dynamic>.from(documentSnapshot.data()!['players'] as List);
 
-    final List<dynamic> players = documentReference.data()!['players'];
+      final bool userExist =
+          players.any((element) => element['id'] == user!.uid);
 
-    final bool userExist = players.any((element) => element['id'] == user!.uid);
+      if (!userExist) {
+        players.add({
+          'id': user!.uid,
+          'position': players.length + 1,
+          'name': user.displayName,
+        });
 
-    if (!userExist) {
-      final Map<String, dynamic> playerData = {
-        'id': user!.uid,
-        'position': players.length + 1,
-        'name': user.displayName,
-      };
-
-      await gameReference.update({
-        'players': FieldValue.arrayUnion([playerData]),
-        'active_players': FieldValue.increment(1),
-      });
-    }
+        transaction.update(gameReference, {
+          'players': players,
+          'active_players': players.length,
+        });
+      }
+    });
   }
 
   Future<void> selectOption(String gameId, String option) async {
@@ -62,24 +65,27 @@ class GameDataSource {
         return;
       }
 
-      final List<dynamic> selections = documentSnapshot.data()!['selections'];
-      final Map<String, dynamic> playerData = {
-        'player_id': user!.uid,
-        'selection': option,
-      };
+      final List<dynamic> currentSelections =
+          List<dynamic>.from(documentSnapshot.data()!['selections'] as List);
 
-      final int index =
-          selections.indexWhere((element) => element['player_id'] == user.uid);
+      final int index = currentSelections
+          .indexWhere((element) => element['player_id'] == user!.uid);
 
       if (index > -1) {
-        selections[index]['selection'] = option;
+        currentSelections[index] = {
+          'player_id': user!.uid,
+          'selection': option,
+        };
       } else {
-        selections.add(playerData);
+        currentSelections.add({
+          'player_id': user!.uid,
+          'selection': option,
+        });
       }
 
       transaction.update(gameReference, {
         'status': GameStatus.selections.name,
-        'selections': selections,
+        'selections': currentSelections,
       });
     });
   }

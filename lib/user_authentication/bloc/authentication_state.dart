@@ -1,13 +1,12 @@
 part of 'authentication_bloc.dart';
 
-@immutable
-abstract class AuthenticationState {}
+sealed class AuthenticationState {}
 
-class AuthenticationInitial extends AuthenticationState {}
+final class AuthenticationInitial extends AuthenticationState {}
 
-class AuthenticationInProgress extends AuthenticationState {}
+final class AuthenticationInProgress extends AuthenticationState {}
 
-class AuthenticationAuthenticated extends AuthenticationState
+final class AuthenticationAuthenticated extends AuthenticationState
     with EquatableMixin {
   AuthenticationAuthenticated({required this.user});
 
@@ -17,4 +16,4 @@ class AuthenticationAuthenticated extends AuthenticationState
   List<Object?> get props => [user];
 }
 
-class AuthenticationFailure extends AuthenticationState {}
+final class AuthenticationFailure extends AuthenticationState {}

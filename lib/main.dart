@@ -63,7 +63,8 @@ class _MyAppState extends State<MyApp> {
             routerConfig: _router,
             title: 'Planning Poker',
             theme: ThemeData(
-              primarySwatch: Colors.blue,
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+              useMaterial3: true,
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(180, 50),
@@ -101,29 +102,19 @@ final GoRouter _router = GoRouter(
       path: RoutesNames.home,
       builder: (context, state) => const Home(),
       redirect: (context, state) {
-        print(context.read<AuthenticationBloc>().state);
-        print(state.path);
-        print(state.fullPath);
-        print(state.location);
-        print(state.toString());
-        print(RoutesNames.home);
         final bool guardedPath = guardedPaths.contains(state.fullPath);
-        print('Guarded path $guardedPath');
         if (FirebaseAuth.instance.currentUser == null && guardedPath) {
-          print('rute guarded ${state.location}');
-          return '${RoutesPaths.login}?guarded-route=${state.location}';
+          return '${RoutesPaths.login}?guarded-route=${state.uri}';
         }
+        return null;
       },
       routes: [
         GoRoute(
           name: RoutesNames.login,
           path: RoutesNames.login,
           builder: (context, state) {
-            state.queryParameters.forEach((key, value) {
-              print('$key: $value');
-            });
             return LoginAnonymouslyPage(
-              guardedRoute: state.queryParameters['guarded-route'],
+              guardedRoute: state.uri.queryParameters['guarded-route'],
             );
           },
         ),

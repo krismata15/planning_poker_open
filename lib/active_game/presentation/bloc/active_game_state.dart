@@ -1,13 +1,12 @@
 part of 'active_game_bloc.dart';
 
-@immutable
-abstract class ActiveGameState {}
+sealed class ActiveGameState {}
 
-class ActiveGameInitial extends ActiveGameState {}
+final class ActiveGameInitial extends ActiveGameState {}
 
-class ActiveGameGettingInitialData extends ActiveGameState {}
+final class ActiveGameGettingInitialData extends ActiveGameState {}
 
-class ActiveGameInitialDataLoaded extends ActiveGameState {
+final class ActiveGameInitialDataLoaded extends ActiveGameState {
   ActiveGameInitialDataLoaded({
     required this.gameName,
     required this.cards,
@@ -17,7 +16,7 @@ class ActiveGameInitialDataLoaded extends ActiveGameState {
   final List<DeckEntity> cards;
 }
 
-class ActiveGameUpdated extends ActiveGameState {
+final class ActiveGameUpdated extends ActiveGameState {
   ActiveGameUpdated({
     required this.gameName,
     required this.players,
@@ -39,7 +38,7 @@ class ActiveGameUpdated extends ActiveGameState {
   final GameResult? gameResult;
 }
 
-class ActiveGameError extends ActiveGameState {
+final class ActiveGameError extends ActiveGameState {
   ActiveGameError({required this.message});
 
   final String message;

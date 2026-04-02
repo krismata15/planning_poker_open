@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planning_poker_open/active_game/data/models/game_model.dart';
@@ -309,6 +311,13 @@ class _OptionCardState extends State<OptionCard> {
   }
 }
 
+typedef TableDistribution = ({
+  List<UserPlayerEntity> top,
+  List<UserPlayerEntity> bottom,
+  List<UserPlayerEntity> left,
+  List<UserPlayerEntity> right,
+});
+
 class Board extends StatelessWidget {
   const Board({
     super.key,
@@ -319,62 +328,75 @@ class Board extends StatelessWidget {
 
   final List<PlayerCardSelectionModel> selections;
   final List<UserPlayerEntity> players;
-
   final GameStatus gameStatus;
+
+  static TableDistribution distributePlayers(List<UserPlayerEntity> players) {
+    final sorted = List<UserPlayerEntity>.from(players)
+      ..sort((a, b) => a.position.compareTo(b.position));
+    final n = sorted.length;
+
+    int leftCount = 0;
+    int rightCount = 0;
+    if (n > 4) leftCount = 1;
+    if (n > 5) rightCount = 1;
+    if (n > 8) leftCount = 2;
+    if (n > 9) rightCount = 2;
+
+    final remaining = n - leftCount - rightCount;
+    final bottomCount = (remaining + 1) ~/ 2;
+    final topCount = remaining - bottomCount;
+
+    int i = 0;
+    final bottom = sorted.sublist(i, i + bottomCount);
+    i += bottomCount;
+    final top = sorted.sublist(i, i + topCount);
+    i += topCount;
+    final left = sorted.sublist(i, i + leftCount);
+    i += leftCount;
+    final right = sorted.sublist(i, min(i + rightCount, n));
+
+    return (top: top, bottom: bottom, left: left, right: right);
+  }
+
+  Widget _buildCard(UserPlayerEntity player) {
+    return CardOnBoardElement(
+      player: player,
+      userSelection: player.userSelection(selections),
+      gameStatus: gameStatus,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final bottomPlayers =
-        players.where((element) => element.position.isOdd).toList();
-    final topPlayers =
-        players.where((element) => element.position.isEven).toList();
+    final dist = distributePlayers(players);
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: topPlayers
-              .map(
-                (player) => CardOnBoardElement(
-                  player: player,
-                  userSelection: player.userSelection(selections),
-                  gameStatus: gameStatus,
-                ),
-              )
-              .toList(),
+          children: dist.top.map(_buildCard).toList(),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Column(
-              children: [
-                /* EmptyCardSelection(),
-                EmptyCardSelection(),*/
-              ],
-            ),
-            CardTable(
-              gameStatus: gameStatus,
-            ),
-            const Column(
-              children: [
-                /*EmptyCardSelection(),
-                EmptyCardSelection(),*/
-              ],
-            ),
+            if (dist.left.isNotEmpty)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: dist.left.map(_buildCard).toList(),
+              ),
+            CardTable(gameStatus: gameStatus),
+            if (dist.right.isNotEmpty)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: dist.right.map(_buildCard).toList(),
+              ),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: bottomPlayers
-              .map(
-                (player) => CardOnBoardElement(
-                  player: player,
-                  userSelection: player.userSelection(selections),
-                  gameStatus: gameStatus,
-                ),
-              )
-              .toList(),
+          children: dist.bottom.map(_buildCard).toList(),
         ),
       ],
     );

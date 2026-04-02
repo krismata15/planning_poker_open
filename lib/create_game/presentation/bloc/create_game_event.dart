@@ -1,11 +1,10 @@
 part of 'create_game_bloc.dart';
 
-@immutable
-abstract class CreateGameEvent {}
+sealed class CreateGameEvent {}
 
-class GetInitialDataForCreatingGame extends CreateGameEvent {}
+final class GetInitialDataForCreatingGame extends CreateGameEvent {}
 
-class CreateGame extends CreateGameEvent {
+final class CreateGame extends CreateGameEvent {
   CreateGame({required this.deckId, required this.gameName});
 
   final String gameName;
