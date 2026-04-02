@@ -81,7 +81,7 @@ class ActiveGamePage extends StatelessWidget {
               );
             }
 
-            return const Text('Error');
+            return const SelectableText('Error');
           },
         ),
       ),
@@ -136,7 +136,7 @@ class SelectionsResultView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                    child: Text(
+                    child: SelectableText(
                       resultData.selection,
                       style: const TextStyle(
                         color: Colors.black,
@@ -144,7 +144,7 @@ class SelectionsResultView extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(
+                SelectableText(
                   '${resultData.count} Vote',
                 ),
               ],
@@ -455,7 +455,7 @@ class CardTable extends StatelessWidget {
                             },
                             child: const Text('Start New Voting'),
                           )
-                        : const Text('Error loading game status'),
+                        : const SelectableText('Error loading game status'),
       ),
     );
   }

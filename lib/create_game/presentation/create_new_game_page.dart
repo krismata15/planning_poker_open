@@ -108,7 +108,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                                       color: colorScheme.primary,
                                     ),
                                     const SizedBox(height: 16),
-                                    Text(
+                                    SelectableText(
                                       'New Game',
                                       textAlign: TextAlign.center,
                                       style: Theme.of(context)
@@ -119,7 +119,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
                                           ),
                                     ),
                                     const SizedBox(height: 8),
-                                    Text(
+                                    SelectableText(
                                       'Choose a name and a voting system for your game.',
                                       textAlign: TextAlign.center,
                                       style: Theme.of(context)
@@ -230,7 +230,7 @@ class _CreateNewGamePageState extends State<CreateNewGamePage> {
               }
 
               return const Center(
-                child: Text('Error in creating game'),
+                child: SelectableText('Error in creating game'),
               );
             },
           ),

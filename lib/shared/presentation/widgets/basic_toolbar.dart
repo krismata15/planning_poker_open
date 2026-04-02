@@ -54,7 +54,7 @@ class BasicToolBar extends StatelessWidget {
               //Image.asset('img/paz.jpg'),
               const BasicSeparationSpace.horizontal(multiplier: 0.4),
               title ??
-                  const Text(
+                  const SelectableText(
                     'Planning Poker',
                     style: BasicStyles.titleStyle,
                   ),
@@ -166,7 +166,7 @@ class BasicToolBar extends StatelessWidget {
                                                   },
                                                   child: Row(
                                                     children: [
-                                                      Text(
+                                                      SelectableText(
                                                         activeUser.username,
                                                         style: Theme.of(context)
                                                             .textTheme
@@ -202,7 +202,7 @@ class BasicToolBar extends StatelessWidget {
                                                   borderRadius:
                                                       BorderRadius.circular(8),
                                                 ),
-                                                child: Text(
+                                                child: SelectableText(
                                                   activeUser.type,
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -249,7 +249,7 @@ class BasicToolBar extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Text(
+                            SelectableText(
                               activeUser.username,
                               style: Theme.of(context)
                                   .textTheme

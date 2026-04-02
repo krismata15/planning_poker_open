@@ -75,7 +75,7 @@ class _LoginAnonymouslyPageState extends State<LoginAnonymouslyPage> {
                               color: colorScheme.primary,
                             ),
                             const SizedBox(height: 16),
-                            Text(
+                            SelectableText(
                               'Welcome',
                               textAlign: TextAlign.center,
                               style: Theme.of(context)
@@ -86,7 +86,7 @@ class _LoginAnonymouslyPageState extends State<LoginAnonymouslyPage> {
                                   ),
                             ),
                             const SizedBox(height: 8),
-                            Text(
+                            SelectableText(
                               'Choose a display name to join the game.',
                               textAlign: TextAlign.center,
                               style: Theme.of(context)

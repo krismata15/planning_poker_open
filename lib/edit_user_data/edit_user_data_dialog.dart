@@ -53,50 +53,53 @@ class _EditUserDataDialogState extends State<EditUserDataDialog> {
               }
             },
             child: Dialog(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: BasicStyles.horizontalPadding,
-                  vertical: BasicStyles.verticalPadding,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SelectableText(
-                      'Edit your display information',
-                      style: BasicStyles.titleStyle,
-                    ),
-                    const BasicSeparationSpace.vertical(
-                      multiplier: 2,
-                    ),
-                    TextField(
-                      controller: usernameController,
-                      autofocus: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Your display name',
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: BasicStyles.horizontalPadding,
+                    vertical: BasicStyles.verticalPadding,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SelectableText(
+                        'Edit your display information',
+                        style: BasicStyles.titleStyle,
                       ),
-                    ),
-                    const BasicSeparationSpace.vertical(
-                      multiplier: 2,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(),
-                      onPressed: () {
-                        context.read<EditUserDataBloc>().add(
-                              EditUserData(
-                                username: usernameController.text,
-                              ),
-                            );
-                      },
-                      child: isLoading
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text('Save'),
-                    ),
-                  ],
+                      const BasicSeparationSpace.vertical(
+                        multiplier: 2,
+                      ),
+                      TextField(
+                        controller: usernameController,
+                        autofocus: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Your display name',
+                        ),
+                      ),
+                      const BasicSeparationSpace.vertical(
+                        multiplier: 2,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(),
+                        onPressed: () {
+                          context.read<EditUserDataBloc>().add(
+                                EditUserData(
+                                  username: usernameController.text,
+                                ),
+                              );
+                        },
+                        child: isLoading
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text('Save'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

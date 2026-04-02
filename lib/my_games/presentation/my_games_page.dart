@@ -63,7 +63,7 @@ class MyGamesPage extends StatelessWidget {
                                     color: colorScheme.outlineVariant,
                                   ),
                                   const SizedBox(height: 16),
-                                  Text(
+                                  SelectableText(
                                     'No previous games found.',
                                     style: Theme.of(context)
                                         .textTheme
@@ -73,7 +73,7 @@ class MyGamesPage extends StatelessWidget {
                                         ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(
+                                  SelectableText(
                                     'Create a new game to get started!',
                                     style: Theme.of(context)
                                         .textTheme

@@ -41,7 +41,7 @@ class Home extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      Text(
+                      SelectableText(
                         'Free Scrum Poker\nfor agile teams',
                         textAlign: TextAlign.center,
                         style: textTheme.headlineLarge?.copyWith(
@@ -50,7 +50,7 @@ class Home extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text(
+                      SelectableText(
                         'Estimate your stories collaboratively in real time.\nUse it for free or deploy your own version.',
                         textAlign: TextAlign.center,
                         style: textTheme.bodyLarge?.copyWith(
@@ -135,7 +135,7 @@ class _FeatureChip extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: colorScheme.primary),
           const SizedBox(width: 6),
-          Text(
+          SelectableText(
             label,
             style: TextStyle(
               fontSize: 13,

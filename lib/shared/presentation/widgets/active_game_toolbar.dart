@@ -61,7 +61,7 @@ class _InvitationLinkDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const BasicSeparationSpace.vertical(),
-            const Text(
+            const SelectableText(
               'Invite players',
               style: BasicStyles.titleStyle,
             ),
