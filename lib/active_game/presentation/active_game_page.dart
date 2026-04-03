@@ -97,8 +97,34 @@ class SelectionsResultView extends StatelessWidget {
 
   final GameResult gameResult;
 
+  ({double? average, double agreement}) _computeStats() {
+    final data = gameResult.selectionsResultData;
+    if (data.isEmpty) return (average: null, agreement: 0);
+
+    double totalNumeric = 0;
+    int numericCount = 0;
+    for (final result in data) {
+      final value = double.tryParse(result.selection);
+      if (value != null) {
+        totalNumeric += value * result.count;
+        numericCount += result.count;
+      }
+    }
+
+    final average = numericCount > 0 ? totalNumeric / numericCount : null;
+
+    final maxPercentage = data
+        .map((d) => d.totalPercentage)
+        .reduce((a, b) => a > b ? a : b);
+
+    return (average: average, agreement: maxPercentage);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final stats = _computeStats();
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -148,6 +174,106 @@ class SelectionsResultView extends StatelessWidget {
                   '${resultData.count} Vote',
                 ),
               ],
+            ),
+          ),
+          const SizedBox(width: 24),
+          _VoteSummaryCard(
+            average: stats.average,
+            agreement: stats.agreement,
+            colorScheme: colorScheme,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VoteSummaryCard extends StatelessWidget {
+  const _VoteSummaryCard({
+    required this.average,
+    required this.agreement,
+    required this.colorScheme,
+  });
+
+  final double? average;
+  final double agreement;
+  final ColorScheme colorScheme;
+
+  String _formatAverage(double value) {
+    if (value == value.roundToDouble()) return value.toInt().toString();
+    return value.toStringAsFixed(1);
+  }
+
+  String _agreementLabel(double value) {
+    if (value >= 1.0) return 'Full consensus';
+    if (value >= 0.7) return 'High agreement';
+    if (value >= 0.5) return 'Moderate';
+    return 'Low agreement';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withOpacity(0.5),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (average != null) ...[
+            Text(
+              _formatAverage(average!),
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              'Average',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ] else
+            Text(
+              'N/A',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: agreement >= 0.7
+                  ? Colors.green.withOpacity(0.1)
+                  : agreement >= 0.5
+                      ? Colors.orange.withOpacity(0.1)
+                      : Colors.red.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              _agreementLabel(agreement),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: agreement >= 0.7
+                    ? Colors.green.shade700
+                    : agreement >= 0.5
+                        ? Colors.orange.shade700
+                        : Colors.red.shade700,
+              ),
             ),
           ),
         ],
@@ -366,9 +492,13 @@ class Board extends StatelessWidget {
     );
   }
 
+  static const double _sideSlotWidth = 90;
+
   @override
   Widget build(BuildContext context) {
     final dist = distributePlayers(players);
+    final bool hasSides =
+        dist.left.isNotEmpty || dist.right.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -381,16 +511,22 @@ class Board extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (dist.left.isNotEmpty)
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: dist.left.map(_buildCard).toList(),
+            if (hasSides)
+              SizedBox(
+                width: _sideSlotWidth,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: dist.left.map(_buildCard).toList(),
+                ),
               ),
             CardTable(gameStatus: gameStatus),
-            if (dist.right.isNotEmpty)
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: dist.right.map(_buildCard).toList(),
+            if (hasSides)
+              SizedBox(
+                width: _sideSlotWidth,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: dist.right.map(_buildCard).toList(),
+                ),
               ),
           ],
         ),
