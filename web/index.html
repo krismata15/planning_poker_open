@@ -70,6 +70,37 @@
     });
     observer.observe(document.body, { childList: true, subtree: true });
   </script>
+  <script>
+    // Auto-refresh on new deployment: check version.json when the tab regains focus
+    (function() {
+      var currentVersion = null;
+
+      function checkForUpdate() {
+        fetch('/version.json?_t=' + Date.now())
+          .then(function(response) { return response.json(); })
+          .then(function(data) {
+            var newVersion = data.version + '+' + data.build_number;
+            if (currentVersion === null) {
+              currentVersion = newVersion;
+            } else if (currentVersion !== newVersion) {
+              console.log('New version detected: ' + newVersion + '. Reloading...');
+              window.location.reload();
+            }
+          })
+          .catch(function() {});
+      }
+
+      // Capture current version on load
+      checkForUpdate();
+
+      // Check when the tab becomes visible again
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+          checkForUpdate();
+        }
+      });
+    })();
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
