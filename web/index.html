@@ -71,6 +71,21 @@
     observer.observe(document.body, { childList: true, subtree: true });
   </script>
   <script>
+    // Clean up any old service workers and their caches
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        registrations.forEach(function(registration) {
+          registration.unregister();
+        });
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        names.forEach(function(name) { caches.delete(name); });
+      });
+    }
+  </script>
+  <script>
     // Auto-refresh on new deployment: check version.json when the tab regains focus
     (function() {
       var currentVersion = null;
@@ -84,7 +99,15 @@
               currentVersion = newVersion;
             } else if (currentVersion !== newVersion) {
               console.log('New version detected: ' + newVersion + '. Reloading...');
-              window.location.reload();
+              if ('caches' in window) {
+                caches.keys().then(function(names) {
+                  Promise.all(names.map(function(name) { return caches.delete(name); })).then(function() {
+                    window.location.reload();
+                  });
+                });
+              } else {
+                window.location.reload();
+              }
             }
           })
           .catch(function() {});
